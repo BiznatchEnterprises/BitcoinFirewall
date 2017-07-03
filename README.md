@@ -1,4 +1,4 @@
-# BitcoinFirewall
+# Bitcoin Firewall
 Core 10 implementation of connections firewall + attack detection
 
 Version 1.0
