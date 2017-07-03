@@ -164,7 +164,7 @@ static CSemaphore *semOutbound = NULL;
 
         // ** Check For Hard-Fork (Above Average) ****
         int HardForkHeightMAX = 10;  // blocks ahead of average MAX!
-        int TempHeightCheck = TempHeight + HardForkHeightMAX;
+        int TempHeightCheck = CurrentAverageHeight + HardForkHeightMAX;
         if (TempHeight >= TempHeightCheck) 
         { 
 
@@ -173,7 +173,7 @@ static CSemaphore *semOutbound = NULL;
         }
         // ********************************************
 
-        // ** Check For Hard-Fork (Above Average) ****
+        // ** Update current average if increased ****
         if (TempHeight > CurrentAverageHeight) 
         {
 
@@ -181,12 +181,14 @@ static CSemaphore *semOutbound = NULL;
         CurrentAverageHeight = CurrentAverageHeight / 2;
     
         }
-        // ** Check For Hard-Fork (Above Average) ****
-
+        // ********************************************
+        
+        // ** Debug Output ON/OFF ****
         if (DebugFunction == true) {
         cout<<"         "<<CurrentAverageHeight<<endl;
         cout<<"         "<<TempHeight<<endl;
         }
+        // ********************************************
  
     }
    // ######## ########
