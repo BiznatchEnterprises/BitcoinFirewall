@@ -1,11 +1,23 @@
 # Bitcoin Firewall
 Core 10 implementation of connections firewall + attack detection
 
-Version 1.0
+Version 1.0 - July 1, 2017
 
-See net.cpp
+# Security features
+- Detection of Hard-fork attacks (Dynamic Checkpoint)
+- SendFlood protection
+- BLACKLIST nodes/peers (Session Ban IP)
 
+# Installation
 
+Requirements:
+- Bitcoin Core 10 compatible coin
+- make
+
+Installation:
+- Download source-code
+- Download net.cpp copy into src
+- follow instructions for build
 
 
 # Contribute to development
