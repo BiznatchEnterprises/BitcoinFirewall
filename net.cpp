@@ -285,7 +285,7 @@ static CSemaphore *semOutbound = NULL;
                 {
                        if (Show_DebugOutput == true) {
 
-                            if (Debug_OutputText != tNodeIP){
+                            if (Debug_OutputText != tNodeIP + "Netflood"){
 
                                 cout << Module_Name + " - NetFlood Attack Detected: "<<tNodeIP<<endl;
 
@@ -350,7 +350,7 @@ static CSemaphore *semOutbound = NULL;
 
         if (Show_DebugOutput == true) {           
 
-            if (Debug_OutputText != tNodeIP){
+            if (Debug_OutputText != tNodeIP + "Disconnect"){
 
                 cout << Module_Name + " - Forced disconnection (panic): "<<tNodeIP<<endl;
 
