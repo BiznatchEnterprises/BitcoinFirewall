@@ -1,5 +1,5 @@
 # Bitcoin Firewall
-Core 10 implementation of connections firewall + attack detection
+World's first implementation of connections firewall + intelligent attack detection
 
 Version 1.0 - July 1, 2017
 
@@ -10,11 +10,11 @@ Version 1.0 - July 1, 2017
 
 # Installation
 
-Requirements:
+# Requirements:
 - Bitcoin Core 10 compatible coin
 - make
 
-Installation:
+# Installation:
 - Download source-code
 - Download net.cpp copy into src
 - follow instructions for build
