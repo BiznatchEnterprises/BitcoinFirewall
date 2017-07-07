@@ -12,8 +12,6 @@ Once a potential attack is detected the connected node/peer is forcefully termin
 - SendFlood protection
 - BLACKLIST nodes/peers (Session Ban IP)
 
-# Installation
-
 # Requirements:
 - Bitcoin Core 10 compatible coin
 - make
