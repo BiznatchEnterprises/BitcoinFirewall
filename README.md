@@ -22,7 +22,7 @@ Once a potential attack is detected the connected node/peer is forcefully termin
 - follow instructions for build
 
 # Modification (Live Terminal Debug)
-- Line # 114   bool Show_DebugOutput = false;   --->    bool Show_DebugOutput = true;
+- Edit: net.cpp - Line # 114   bool Show_DebugOutput = false;   >>>>    bool Show_DebugOutput = true;
 
 # Logging (debug.log)
 
