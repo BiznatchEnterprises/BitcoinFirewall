@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
-// Copyright (c) 2017 BATA developers (RefreshRecentConnections)
+// Copyright (c) 2017 BATA Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -125,7 +125,7 @@ int Debug_OutputHeight = 0;
 bool DebugOutput = false;
 string Debug_OutputText;
 string Debug_OutputIP;
-string Module_Name = "[Bitcoin Firewall 1.0]";
+string Module_Name = "[Bitcoin Firewall 1.1]";
 // * NetFlood Detection Settings *
 // 900 KB send/receive size
 int NetFlood_Rule1 = 9000;
@@ -325,8 +325,8 @@ bool Check_NetFloodAttack(CNode *pnode)
     }
 
     // * Netflood Attack detection #3 -> (Start Height = -1, over 30 seconds connection length)
-    // Check for more than 30 seconds connection length
-    if (tTimeConnected > 30)
+    // Check for more than 60 seconds connection length
+    if (tTimeConnected > 60)
     {
         // Check for -1 blockheight
         if (pnode->nStartingHeight == -1)
@@ -413,7 +413,7 @@ bool Force_DisconnectNode(CNode *pnode)
 }
 
 
-void FireWall(CNode *pnode, string FromFunction)
+bool FireWall(CNode *pnode, string FromFunction)
 {
     // Node/peer IP Name
     string tNodeIP = pnode->addrName;
@@ -429,18 +429,18 @@ void FireWall(CNode *pnode, string FromFunction)
 
     if (CheckForBannedIP(pnode) == true)
     { 
-        Force_DisconnectNode(pnode);
 // Peer/Node firewalled
-return;
+return Force_DisconnectNode(pnode);
     }
 
     if (Check_NetFloodAttack(pnode) == true)
     { 
-        Force_DisconnectNode(pnode);
 // Peer/Node firewalled
-return;
+return Force_DisconnectNode(pnode);
     }
 
+// Peer/Node Safe    
+return false;
 }
 // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
@@ -995,9 +995,10 @@ void SocketSendData(CNode *pnode)
     {
         const CSerializeData &data = *it;
 
-        FireWall(pnode, "SendData");
+        if (FireWall(pnode, "SendData") == true) { return; }
 
                 assert(data.size() > pnode->nSendOffset);
+
                     int nBytes = send(pnode->hSocket, &data[pnode->nSendOffset], data.size() - pnode->nSendOffset, MSG_NOSIGNAL | MSG_DONTWAIT);
 
                         if (nBytes > 0) //nBytes bigger than 0
@@ -1042,6 +1043,7 @@ void SocketSendData(CNode *pnode)
     if (it == pnode->vSendMsg.end()) {
         assert(pnode->nSendOffset == 0);
         assert(pnode->nSendSize == 0);
+
     }
     pnode->vSendMsg.erase(pnode->vSendMsg.begin(), it);
 
@@ -1064,6 +1066,9 @@ bool FirstCycle = true;
 
 void RefreshRecentConnections(int RefreshMinutes)
 {
+
+if (vNodes.size() >= 4) { return; }
+
 time_t timer;
 int SecondsPassed = 0;
 int MinutesPassed = 0;
@@ -1214,6 +1219,8 @@ return;
 
 void ThreadSocketHandler()
 {
+    int64_t nTime = GetTime();
+    bool DisconnectIdle = false;
 
     unsigned int nPrevNodeCount = 0;
     while (true)
@@ -1227,9 +1234,37 @@ void ThreadSocketHandler()
             vector<CNode*> vNodesCopy = vNodes;
             BOOST_FOREACH(CNode* pnode, vNodesCopy)
             {
+                DisconnectIdle = false;
+
                 if (pnode->fDisconnect ||
                     (pnode->GetRefCount() <= 0 && pnode->vRecvMsg.empty() && pnode->nSendSize == 0 && pnode->ssSend.empty()))
                 {
+                    DisconnectIdle = true;
+                }
+
+                if (pnode->nTimeConnected > IDLE_TIMEOUT)
+                {
+                    if (pnode->GetRefCount() <= 0)
+                    {
+                        if (pnode->nSendSize == 0)
+                        {
+                            if (nTime - pnode->nLastSend > DATA_TIMEOUT)
+                            {      
+                                DisconnectIdle = true;
+                            }
+                
+                            if (nTime - pnode->nLastRecv > DATA_TIMEOUT)
+                            {
+                                DisconnectIdle = true;
+                            }
+                        }
+                    }
+                }       
+
+                if (DisconnectIdle == true)
+                {
+                    pnode->fDisconnect = true;
+
                     // remove from vNodes
                     vNodes.erase(remove(vNodes.begin(), vNodes.end(), pnode), vNodes.end());
 
@@ -1506,41 +1541,62 @@ void ThreadSocketHandler()
             //
             // Inactivity checking
             //
-            int64_t nTime = GetTime();
-            if (nTime - pnode->nTimeConnected > 60)
+
+            if (nTime - pnode->nTimeConnected > IDLE_TIMEOUT)
             {
                 if (pnode->nLastRecv == 0 || pnode->nLastSend == 0)
                 {
                     LogPrint("net", "socket no message in first 60 seconds, %d %d from %d\n", pnode->nLastRecv != 0, pnode->nLastSend != 0, pnode->id);
-                    pnode->fDisconnect = true;
+                    DisconnectIdle = true;
                 }
-                else if (nTime - pnode->nLastSend > TIMEOUT_INTERVAL)
+                if (nTime - pnode->nLastSend > DATA_TIMEOUT)
                 {
                     LogPrintf("socket sending timeout: %is\n", nTime - pnode->nLastSend);
-                    pnode->fDisconnect = true;
+                    DisconnectIdle = true;
                 }
-                else if (nTime - pnode->nLastRecv > (pnode->nVersion > BIP0031_VERSION ? TIMEOUT_INTERVAL : 90*60))
+                if (nTime - pnode->nLastRecv > DATA_TIMEOUT)
                 {
                     LogPrintf("socket receive timeout: %is\n", nTime - pnode->nLastRecv);
-                    pnode->fDisconnect = true;
+                    DisconnectIdle = true;
                 }
-                else if (pnode->nPingNonceSent && pnode->nPingUsecStart + TIMEOUT_INTERVAL * 1000000 < GetTimeMicros())
+                if (pnode->nPingNonceSent && pnode->nPingUsecStart + TIMEOUT_INTERVAL * 1000000 < GetTimeMicros())
                 {
                     LogPrintf("ping timeout: %fs\n", 0.000001 * (GetTimeMicros() - pnode->nPingUsecStart));
-                    pnode->fDisconnect = true;
+                    DisconnectIdle = true;
                 }
+
+                if (DisconnectIdle == true)
+                {
+                    // remove from vNodes
+                    vNodes.erase(remove(vNodes.begin(), vNodes.end(), pnode), vNodes.end());
+
+                    // release outbound grant (if any)
+                    pnode->grantOutbound.Release();
+
+                    // close socket and cleanup
+                    pnode->CloseSocketDisconnect();
+
+                    // hold in disconnected pool until all refs are released
+                    if (pnode->fNetworkNode || pnode->fInbound)
+                        pnode->Release();
+                    vNodesDisconnected.push_back(pnode);
+                }
+                
             }
         }
-        {
-            LOCK(cs_vNodes);
-            BOOST_FOREACH(CNode* pnode, vNodesCopy)
-                pnode->Release();
+        {		
+            LOCK(cs_vNodes);		
+            BOOST_FOREACH(CNode* pnode, vNodesCopy)		
+                pnode->Release();		
         }
 
-    // Refresh nodes/peers every X minutes
-    RefreshRecentConnections(25);
+
 
     }
+
+    // Refresh nodes/peers every X minutes
+    RefreshRecentConnections(REFRESH_CONNECTIONS);
+
 }
 
 #ifdef USE_UPNP
@@ -1666,7 +1722,7 @@ void ThreadDNSAddressSeed()
         MilliSleep(11 * 1000);
 
         LOCK(cs_vNodes);
-        if (vNodes.size() >= 2) {
+        if (vNodes.size() >= 10) {
             LogPrintf("P2P peers available. Skipped DNS seeding.\n");
             return;
         }
@@ -1913,7 +1969,7 @@ bool OpenNetworkConnection(const CAddress& addrConnect, CSemaphoreGrant *grantOu
         return false;
     if (grantOutbound)
 
-        FireWall(pnode, "Connected");
+        if (FireWall(pnode, "OpenNetConnection") == true) { return false; }
 
         grantOutbound->MoveTo(pnode->grantOutbound);
     pnode->fNetworkNode = true;
@@ -1958,7 +2014,7 @@ void ThreadMessageHandler()
                     if (!g_signals.ProcessMessages(pnode))
                         pnode->CloseSocketDisconnect();
 
-                            FireWall(pnode, "GetData");
+                            if (FireWall(pnode, "GetData") == true) { continue; }
 
                     if (pnode->nSendSize < SendBufferSize())
                     {
@@ -2596,8 +2652,3 @@ void CNode::EndMessage() UNLOCK_FUNCTION(cs_vSend)
 
     LEAVE_CRITICAL_SECTION(cs_vSend);
 }
-
-    
-
-
-
