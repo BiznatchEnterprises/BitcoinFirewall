@@ -1,6 +1,5 @@
 // [Bitcoin Firewall 1.2.3
-// Oct 14, 2017 - Biznatch Enterprises & Bata Development
-// http://bata.io & https://github.com/BiznatchEnterprises/BitcoinFirewall
+// Oct 14, 2017 - Biznatch Enterprises (https://github.com/BiznatchEnterprises/BitcoinFirewall) & Bata Development (https://bata.io)
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
