@@ -12,20 +12,10 @@ Once a potential attack is detected the connected node/peer is forcefully termin
 - SendFlood protection
 - BLACKLIST nodes/peers (Session Ban IP)
 
-# Requirements:
-- Bitcoin Core 10 compatible coin
-- make
-
-# Installation:
-- Download source-code
-- Download net.cpp copy into src
-- follow instructions for build
-
 # Modification (Live Terminal Debug)
 - bool Show_DebugOutput = false;    >>>>    bool Show_DebugOutput = true;
 
 # Logging (debug.log)
-
 - 2017-07-28 06:45:31 Firewall - Netflood Detected: *.*.*.*:****
 - 2017-07-28 06:45:31 Firewall - Blacklisted: *.*.*.*:****
 - 2017-07-28 06:45:31 Firewall - Panic Disconnect: *.*.*.*:****
