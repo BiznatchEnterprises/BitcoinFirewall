@@ -1,5 +1,5 @@
 # Bitcoin Firewall
-World's first implementation of connections firewall + intelligent attack detection
+World's first implementation of connections firewall & intelligent attack detection
 
 Version 1.2.3 - October 14, 2017
 
