@@ -1,7 +1,7 @@
 # Bitcoin Firewall
 World's first implementation of connections firewall + intelligent attack detection
 
-Version 1.1 - August 4, 2017
+Version 1.2.3 - October 14, 2017
 
 Bitcoin Firewall uses a very unique method for detecting potential hard-fork attacks coupled with specific block chain DDoS flooding. All connected nodes/peers are examined by the amount of data they're sending or receiving from a peer with the firewall enabled. If bandwidth usage is greater than the limits set the connecting node is further examined to verify their blockchain start height is within safe limits of the average among all peers connected. Range based blockchain checkpoints that use averages of live blockchain sizes further enhance security by limiting potential attacks known as >51% of distributed hashing power.
 
@@ -11,7 +11,6 @@ Once a potential attack is detected the connected node/peer is forcefully termin
 - Detection of Hard-fork attacks (Dynamic Checkpoint)
 - SendFlood protection
 - BLACKLIST nodes/peers (Session Ban IP)
-- RefreshRecentConnection (DNS, .conf file, Peers.dat) every X minutes
 
 # Requirements:
 - Bitcoin Core 10 compatible coin
