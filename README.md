@@ -12,8 +12,18 @@ Once a potential attack is detected the connected node/peer is forcefully termin
 - SendFlood protection
 - BLACKLIST nodes/peers (Session Ban IP)
 
-# Modification (Live Terminal Debug)
-- bool Show_DebugOutput = false;    >>>>    bool Show_DebugOutput = true;
+# Modification (Live Terminal Debug - firewall.h)
+- bool ENABLE_FIREWALL = true;
+- bool LIVE_DEBUG_OUTPUT = false;
+- bool INTERVAL_CHECK_ALL = true;
+- bool DETECT_INVALID_WALLET = true;
+- bool BLACKLIST_INVALID_WALLET = true;
+- bool BAN_INVALID_WALLET = true;
+- bool DETECT_BANDWIDTH_ABUSE =  true;
+- bool BLACKLIST_BANDWIDTH_ABUSE = true;
+- bool BAN_BANDWIDTH_ABUSE = true;
+- bool FALSE_POSITIVE_PROTECTION =  true;
+- bool FIREWALL_CLEAR_BANS = false;
 
 # Logging (debug.log)
 - 2017-07-28 06:45:31 Firewall - Netflood Detected: *.*.*.*:****
