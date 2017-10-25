@@ -12,7 +12,7 @@ Once a potential attack is detected the connected node/peer is forcefully termin
 - SendFlood protection
 - BLACKLIST nodes/peers (Session Ban IP)
 
-# Modification (Live Terminal Debug - firewall.h)
+# Modifications (firewall.h)
 - bool ENABLE_FIREWALL = true;
 - bool LIVE_DEBUG_OUTPUT = false;
 - bool INTERVAL_CHECK_ALL = true;
