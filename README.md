@@ -24,6 +24,12 @@ Once a potential attack is detected the connected node/peer is forcefully termin
 - bool BAN_BANDWIDTH_ABUSE = true;
 - bool FALSE_POSITIVE_PROTECTION =  true;
 - bool FIREWALL_CLEAR_BANS = false;
+- int ALL_CHECK_MAX = 3;  // minutes interval
+- IgnoreSeedNode[]
+- int AverageTolerance = 2;    // Reduce for minimal fluctuation 2 Blocks tolerance
+- int AverageRange = 500;   // + or - Starting Height Range
+- double TrafficTolerance = 0.0001; // Reduce for minimal fluctuation
+- double TrafficZone = 4; // + or - Traffic Range
 
 # Logging (debug.log)
 - 2017-07-28 06:45:31 Firewall - Netflood Detected: *.*.*.*:****
