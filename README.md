@@ -3,7 +3,7 @@ World's first implementation of connections firewall & intelligent attack detect
 
 Version 1.2.3 - October 14, 2017
 
-Bitcoin Firewall uses a very unique method for detecting potential hard-fork attacks coupled with specific block chain DDoS flooding. All connected nodes/peers are examined by the amount of data they're sending or receiving from a peer with the firewall enabled. If bandwidth usage is greater than the limits set the connecting node is further examined to verify their blockchain start height is within safe limits of the average among all peers connected. Range based blockchain checkpoints that use averages of live blockchain sizes further enhance security by limiting potential attacks known as >51% of distributed hashing power.
+Bitcoin Firewall uses a very unique method for detecting potential hard-fork attacks coupled with specific block chain DDoS flooding. All connected nodes/peers are examined by the amount of data they're sending or receiving from a peer with the firewall enabled. If bandwidth usage is greater than the limits set, the connecting node is further examined to verify their blockchain start & sync height is within safe limits; The average among all peers connected. Range based blockchain checkpoints that use averages of live blockchain sizes further enhance security by limiting potential attacks known as >51% of distributed hashing power (double-spend, Sybil attack).
 
 Once a potential attack is detected the connected node/peer is forcefully terminated and added to a session blacklist. Configuration options, as well as long-term blacklist storage and future sharing among peers will be implemented during future developments.
 
