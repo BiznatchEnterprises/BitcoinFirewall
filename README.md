@@ -39,6 +39,7 @@ Once a potential attack is detected the connected node/peer is forcefully termin
 # Contribute to development
 Please donate cryptocoins:
 
+- Xios: 2M1NhgbaJ7Zi3VmFGSmnLXFA5nkY7G9sym
 - Bitcoin: 1F4TunADj7BMkYCpWKwsmtxixwdVG9WS1n
 - BitConnect: 8XZfQco6HjE7HhyHDmJEubQVKZLSP8jDUs
 - Litecoin: Lfo8x4dazSnoJwsXG4KG94r4UeDUCrJE3S
