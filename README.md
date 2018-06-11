@@ -1,7 +1,7 @@
 # Bitcoin Firewall
 World's first implementation of connections firewall & intelligent attack detection
 
-Version 1.2.3 - October 14, 2017
+Version 1.2.3 (Core 10) - October 14, 2017
 
 Bitcoin Firewall uses a very unique method for detecting potential hard-fork attacks coupled with specific block chain DDoS flooding. All connected nodes/peers are examined by the amount of data they're sending or receiving regardless of the algorithm or block validity. A deeper analysis is then used to verify their blockchain start & sync height and bandwidth use is within safe limits; The average among all peers connected. Range based blockchain checkpoints that use averages of live blockchain sizes further enhance security by limiting potential attacks known as >51% of distributed hashing power (double-spend, Sybil attack)
 
